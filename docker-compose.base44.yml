@@ -1,0 +1,19 @@
+services:
+  web:
+    image: oven/bun:1
+    working_dir: /app
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS
+    command: ["sh", "-ec", "bun install --frozen-lockfile && exec bun dev"]
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "sh", "-c", "wget -qO- http://localhost:3000/ | grep -q 'id=\"root\"'"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s

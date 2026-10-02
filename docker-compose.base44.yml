@@ -12,7 +12,7 @@ services:
     command: ["sh", "-ec", "bun install --frozen-lockfile && exec bun dev"]
     restart: on-failure
     healthcheck:
-      test: ["CMD", "sh", "-c", "wget -qO- http://localhost:3000/ | grep -q 'id=\"root\"'"]
+      test: ["CMD", "bun", "-e", "fetch('http://localhost:3000/').then(r=>r.text()).then(t=>{if(!t.includes('id=\"root\"'))throw 1}).catch(()=>process.exit(1))"]
       interval: 15s
       timeout: 5s
       retries: 5
